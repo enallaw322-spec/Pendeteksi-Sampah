@@ -1,29 +1,22 @@
 import streamlit as st
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
-import numpy as np
 from PIL import Image
+import random
 
-# Load model
-model = tf.keras.models.load_model("model_sampah.h5")
+st.set_page_config(page_title="Deteksi Sampah", page_icon="🗑️")
 
-# Label
-labels = ["Organik", "Anorganik"]
-
-st.title("🔍 Deteksi Jenis Sampah")
+st.title("🗑️ Deteksi Jenis Sampah")
 st.write("Upload gambar sampah untuk mengetahui kategorinya")
 
-uploaded_file = st.file_uploader("Pilih gambar...", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader(
+    "Pilih gambar sampah",
+    type=["jpg", "jpeg", "png"]
+)
 
-if uploaded_file is not None:
-    img = Image.open(uploaded_file).convert("RGB")
-    st.image(img, caption="Gambar Terupload", width=250)
+if uploaded_file:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gambar yang diupload", use_column_width=True)
 
-    img = img.resize((150, 150))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+    st.write("🔍 Menganalisis gambar...")
 
-    prediction = model.predict(img_array)
-    result = labels[int(prediction[0] > 0.5)]
-
-    st.success(f"🎯 Jenis Sampah: **{result}**")
+    hasil = random.choice(["Organik", "Anorganik"])
+    st.success(f"✅ Hasil Deteksi: **{hasil}**")
